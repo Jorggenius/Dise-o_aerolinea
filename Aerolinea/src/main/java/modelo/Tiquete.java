@@ -11,16 +11,17 @@ import java.sql.Date;
  * @author JORGE
  */
 public class Tiquete {
+
     int id;
-   String destino;
-   Date fecha;
+    String destino;
+    Date fecha;
 
     public Tiquete(int id, String destino, Date fecha) {
         this.id = id;
         this.destino = destino;
         this.fecha = fecha;
     }
-    
+
     public Tiquete(String destino, Date fecha) {
         this.destino = destino;
         this.fecha = fecha;
@@ -49,6 +50,5 @@ public class Tiquete {
     public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
-    
-    
+
 }

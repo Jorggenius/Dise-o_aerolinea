@@ -4,11 +4,19 @@
  */
 package vista;
 
+import controlador.ControlLogin;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author JORGE
  */
 public class VistaLogin extends javax.swing.JFrame {
+
+    ControlLogin controlL;
 
     /**
      * Creates new form VistaLogin
@@ -16,6 +24,11 @@ public class VistaLogin extends javax.swing.JFrame {
     public VistaLogin() {
         initComponents();
         setLocationRelativeTo(this);
+        try {
+            controlL = new ControlLogin();
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaLogin.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -125,12 +138,27 @@ public class VistaLogin extends javax.swing.JFrame {
 
     private void btnIngresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIngresarActionPerformed
         // TODO add your handling code here:
-     
+        String usuario = txtUsuario.getText();
+        String contraseña = txtContraseña.getText();
+
+        if (controlL.login(usuario, contraseña)) {
+            VistaCliente vistaC = new VistaCliente(controlL.ObtenerID(usuario, usuario));
+            vistaC.setVisible(true);
+            this.dispose();
+        } else if (usuario.equals("admin") && contraseña.equals("123")) {
+            VistaAdministrador vistaPA = new VistaAdministrador();
+            vistaPA.setVisible(true);
+            this.dispose();
+        } else {
+            JOptionPane.showMessageDialog(null, " Los datos ingresados son incorrectos");
+        }
     }//GEN-LAST:event_btnIngresarActionPerformed
 
     private void btnRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroActionPerformed
         // TODO add your handling code here:
-  
+        VistaRegistro vistaR = new VistaRegistro();
+        vistaR.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_btnRegistroActionPerformed
 
     /**

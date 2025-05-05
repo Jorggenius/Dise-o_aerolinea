@@ -27,13 +27,13 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
-                      <Component id="txtGestionPrestamos3" min="-2" max="-2" attributes="0"/>
+                      <Component id="btnCerrarSecion" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="259" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="txtGestionPrestamos2" max="32767" attributes="0"/>
-                          <Component id="txtGestionPrestamos1" alignment="1" max="32767" attributes="0"/>
+                          <Component id="txtCompras" alignment="1" max="32767" attributes="0"/>
                           <Component id="txtGestionPrestamos" alignment="1" max="32767" attributes="0"/>
                           <Component id="jLabel1" alignment="0" min="-2" pref="234" max="-2" attributes="0"/>
                       </Group>
@@ -51,11 +51,11 @@
               <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
               <Component id="txtGestionPrestamos" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
-              <Component id="txtGestionPrestamos1" min="-2" max="-2" attributes="0"/>
+              <Component id="txtCompras" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
               <Component id="txtGestionPrestamos2" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="121" max="32767" attributes="0"/>
-              <Component id="txtGestionPrestamos3" min="-2" max="-2" attributes="0"/>
+              <Component id="btnCerrarSecion" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -79,7 +79,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtGestionPrestamosActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="txtGestionPrestamos1">
+    <Component class="javax.swing.JButton" name="txtCompras">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="99" red="99" type="rgb"/>
@@ -92,6 +92,9 @@
           <Color id="Hand Cursor"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtComprasActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="txtGestionPrestamos2">
       <Properties>
@@ -110,7 +113,7 @@
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtGestionPrestamos2ActionPerformed"/>
       </Events>
     </Component>
-    <Component class="javax.swing.JButton" name="txtGestionPrestamos3">
+    <Component class="javax.swing.JButton" name="btnCerrarSecion">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="99" red="99" type="rgb"/>
@@ -124,7 +127,7 @@
         </Property>
       </Properties>
       <Events>
-        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="txtGestionPrestamos3ActionPerformed"/>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCerrarSecionActionPerformed"/>
       </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel1">

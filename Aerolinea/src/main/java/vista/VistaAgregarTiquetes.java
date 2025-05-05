@@ -4,18 +4,39 @@
  */
 package vista;
 
+import controlador.ControlAgregarTiquete;
+import excepciones.InvalidUserDataException;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import modelo.Tiquete;
+import modelo.TiqueteBuilder;
+
 /**
  *
  * @author JORGE
  */
 public class VistaAgregarTiquetes extends javax.swing.JFrame {
 
+    ControlAgregarTiquete controlAT;
+    TiqueteBuilder builder;
+    ArrayList<Tiquete> tiquetes;
+
     /**
      * Creates new form VistaComprar
      */
-    public VistaAgregarTiquetes() {
+    public VistaAgregarTiquetes() throws SQLException {
         initComponents();
         setLocationRelativeTo(this);
+        controlAT = new ControlAgregarTiquete();
+        builder = new TiqueteBuilder();
+        tiquetes = controlAT.getTiquetes();
+        llenarTabla();
     }
 
     /**
@@ -29,20 +50,20 @@ public class VistaAgregarTiquetes extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaTiquetes = new javax.swing.JTable();
         txtGestionPrestamos1 = new javax.swing.JButton();
         txtGestionPrestamos2 = new javax.swing.JButton();
-        txtUsuario1 = new javax.swing.JTextField();
+        txtDestino = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        txtUsuario2 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
+        dateFecha = new com.toedter.calendar.JDateChooser();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
         jLabel1.setText("Agregar");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaTiquetes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -50,17 +71,27 @@ public class VistaAgregarTiquetes extends javax.swing.JFrame {
                 "Id", "Destino", "Fecha"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaTiquetes);
 
         txtGestionPrestamos1.setBackground(new java.awt.Color(153, 153, 255));
         txtGestionPrestamos1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtGestionPrestamos1.setText("Agregar");
         txtGestionPrestamos1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        txtGestionPrestamos1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtGestionPrestamos1ActionPerformed(evt);
+            }
+        });
 
         txtGestionPrestamos2.setBackground(new java.awt.Color(153, 153, 255));
         txtGestionPrestamos2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtGestionPrestamos2.setText("Regresar");
         txtGestionPrestamos2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        txtGestionPrestamos2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtGestionPrestamos2ActionPerformed(evt);
+            }
+        });
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel4.setText("Destino");
@@ -78,11 +109,11 @@ public class VistaAgregarTiquetes extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addGap(18, 18, 18)
-                        .addComponent(txtUsuario2, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(dateFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addGap(18, 18, 18)
-                        .addComponent(txtUsuario1, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(122, 122, 122)
                 .addComponent(txtGestionPrestamos1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -111,13 +142,13 @@ public class VistaAgregarTiquetes extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(70, 70, 70)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtUsuario1, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtDestino, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4))
-                        .addGap(26, 26, 26)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(txtUsuario2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE))
+                        .addGap(27, 27, 27)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(dateFecha, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 60, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtGestionPrestamos1)
@@ -131,20 +162,64 @@ public class VistaAgregarTiquetes extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void txtGestionPrestamos1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamos1ActionPerformed
+        // TODO add your handling code here:
+        try {
+            String destino = txtDestino.getText();
+            java.util.Date fechaUtil = dateFecha.getDate(); // devuelve java.util.Date
+            java.sql.Date fecha = new java.sql.Date(fechaUtil.getTime()); // conversión segura
+
+            Tiquete tiquete = builder
+                    .setDestino(destino)
+                    .setFecha(fecha)
+                    .getTiquete();
+
+            controlAT.registrarTiquete(tiquete);
+            JOptionPane.showMessageDialog(null, "El tiquete se ha agregado exitosamente");
+            llenarTabla();
+        } catch (InvalidUserDataException ex) {
+            Logger.getLogger(VistaAgregarTiquetes.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaAgregarTiquetes.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
+    }//GEN-LAST:event_txtGestionPrestamos1ActionPerformed
+
+    private void txtGestionPrestamos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamos2ActionPerformed
+        // TODO add your handling code here:
+        VistaAdministrador vistaA = new VistaAdministrador();
+        vistaA.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_txtGestionPrestamos2ActionPerformed
+
+    private void llenarTabla() throws SQLException {
+        tiquetes = controlAT.getTiquetes();
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Id", "Destino", "Fecha"},
+                tiquetes.size());
+        tablaTiquetes.setModel(model);
+        TableModel modelP = tablaTiquetes.getModel();
+        for (int i = 0; i < tiquetes.size(); i++) {
+            Tiquete tiquete = tiquetes.get(i);
+            modelP.setValueAt(tiquete.getId(), i, 0);
+            modelP.setValueAt(tiquete.getDestino(), i, 1);
+            modelP.setValueAt(tiquete.getFecha(), i, 2);
+        }
+    }
+
     /**
      * @param args the command line arguments
      */
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JDateChooser dateFecha;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tablaTiquetes;
+    private javax.swing.JTextField txtDestino;
     private javax.swing.JButton txtGestionPrestamos1;
     private javax.swing.JButton txtGestionPrestamos2;
-    private javax.swing.JTextField txtUsuario1;
-    private javax.swing.JTextField txtUsuario2;
     // End of variables declaration//GEN-END:variables
 }

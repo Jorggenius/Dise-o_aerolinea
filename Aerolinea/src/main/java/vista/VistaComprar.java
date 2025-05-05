@@ -4,18 +4,37 @@
  */
 package vista;
 
+import controlador.ControlAgregarTiquete;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import modelo.Tiquete;
+
 /**
  *
  * @author JORGE
  */
 public class VistaComprar extends javax.swing.JFrame {
 
+    ControlAgregarTiquete controlAT;
+    ArrayList<Tiquete> tiquetes;
+    int idCliente;
+
     /**
      * Creates new form VistaComprar
      */
-    public VistaComprar() {
+    public VistaComprar() throws SQLException {
         initComponents();
         setLocationRelativeTo(this);
+        this.idCliente = idCliente;
+        controlAT = new ControlAgregarTiquete();
+        tiquetes = controlAT.getTiquetes();
+        llenarTabla();
+        agregarListenerTabla();
     }
 
     /**
@@ -28,12 +47,12 @@ public class VistaComprar extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        txtUsuario = new javax.swing.JTextField();
+        txtId = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtGestionPrestamos1 = new javax.swing.JButton();
         txtGestionPrestamos2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaTiquetes = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,13 +66,18 @@ public class VistaComprar extends javax.swing.JFrame {
         txtGestionPrestamos1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtGestionPrestamos1.setText("Comprar");
         txtGestionPrestamos1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        txtGestionPrestamos1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtGestionPrestamos1ActionPerformed(evt);
+            }
+        });
 
         txtGestionPrestamos2.setBackground(new java.awt.Color(153, 153, 255));
         txtGestionPrestamos2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtGestionPrestamos2.setText("Regresar");
         txtGestionPrestamos2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaTiquetes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -61,7 +85,7 @@ public class VistaComprar extends javax.swing.JFrame {
                 "Id", "Destino", "Fecha"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaTiquetes);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -76,7 +100,7 @@ public class VistaComprar extends javax.swing.JFrame {
                         .addGap(93, 93, 93)
                         .addComponent(jLabel3)
                         .addGap(18, 18, 18)
-                        .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
                         .addComponent(txtGestionPrestamos1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(311, 311, 311))
@@ -97,7 +121,7 @@ public class VistaComprar extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addGap(31, 31, 31)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
                     .addComponent(txtGestionPrestamos1))
                 .addGap(303, 303, 303)
@@ -113,18 +137,50 @@ public class VistaComprar extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void txtGestionPrestamos1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamos1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtGestionPrestamos1ActionPerformed
+   private void llenarTabla() throws SQLException {
+        tiquetes = controlAT.getTiquetes();
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Id", "Destino", "Fecha"},
+                tiquetes.size());
+        tablaTiquetes.setModel(model);
+        TableModel modelP = tablaTiquetes.getModel();
+        for (int i = 0; i < tiquetes.size(); i++) {
+            Tiquete tiquete = tiquetes.get(i);
+            modelP.setValueAt(tiquete.getId(), i, 0);
+            modelP.setValueAt(tiquete.getDestino(), i, 1);
+            modelP.setValueAt(tiquete.getFecha(), i, 2);
+        }
+    }
+    
+    private void agregarListenerTabla() {
+        ListSelectionModel model = tablaTiquetes.getSelectionModel();
+        model.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    int selectedRow = tablaTiquetes.getSelectedRow();
+                    if (selectedRow != -1) {
+                        // Obtén el valor de la columna "№ Plaza"
+                        int id = (int) tablaTiquetes.getValueAt(selectedRow, 0);
+                        txtId.setText(String.valueOf(id));
+                    }
+                }
+            }
+        });
+    }
     /**
      * @param args the command line arguments
      */
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tablaTiquetes;
     private javax.swing.JButton txtGestionPrestamos1;
     private javax.swing.JButton txtGestionPrestamos2;
-    private javax.swing.JTextField txtUsuario;
+    private javax.swing.JTextField txtId;
     // End of variables declaration//GEN-END:variables
 }

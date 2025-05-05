@@ -21,7 +21,7 @@ public class CompraRepository {
 
     public Compra findById(int id) throws SQLException {
         String query = "SELECT * FROM compra WHERE id = " + id;
-        try (Connection connection = DataBaseConfig.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+        try (Connection connection = DataBaseConfig.getInstance().getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
             if (resultSet.next()) {
                 return new Compra(
                         resultSet.getInt("cliente_id"),
@@ -37,7 +37,7 @@ public class CompraRepository {
         String query = "SELECT * FROM compra WHERE id";
         ArrayList<Compra> prestamos = new ArrayList<>();
 
-        try (Connection connection = DataBaseConfig.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+        try (Connection connection = DataBaseConfig.getInstance().getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
 
             while (resultSet.next()) {
                 prestamos.add(new Compra(
@@ -52,7 +52,7 @@ public class CompraRepository {
       public void save(Compra compra) throws SQLException {
         String query = "INSERT INTO prestamo (id ,fecha) VALUES ('"
                 + compra.getId() + "', '" + compra.getFecha()+ "')";
-        try (Connection connection = DataBaseConfig.getConnection(); Statement statement = connection.createStatement()) {
+        try (Connection connection = DataBaseConfig.getInstance().getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
         }
     }
@@ -60,7 +60,7 @@ public class CompraRepository {
         public ArrayList<Compra> findByCompraId(int ClienteId) throws SQLException {
     String query = "SELECT * FROM compra WHERE cliente_id = ?";
     ArrayList<Compra> compras = new ArrayList<>();
-    try (Connection connection = DataBaseConfig.getConnection();
+    try (Connection connection = DataBaseConfig.getInstance().getConnection();
          PreparedStatement statement = connection.prepareStatement(query)) {
         statement.setInt(1, ClienteId); // Se asigna el valor del clienteId en la consulta
         try (ResultSet resultSet = statement.executeQuery()) {

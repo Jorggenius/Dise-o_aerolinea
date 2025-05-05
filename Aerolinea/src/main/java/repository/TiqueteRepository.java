@@ -20,7 +20,7 @@ public class TiqueteRepository {
 
     public Tiquete findById(int id) throws SQLException {
         String query = "SELECT * FROM tiquete WHERE id = " + id;
-        try (Connection connection = DataBaseConfig.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+        try (Connection connection = DataBaseConfig.getInstance().getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
             if (resultSet.next()) {
                 return new Tiquete(
                         resultSet.getInt("id"),
@@ -36,7 +36,7 @@ public class TiqueteRepository {
     public ArrayList<Tiquete> findAll() throws SQLException {
         String query = "SELECT * FROM tiquete";
         ArrayList<Tiquete> tiquetes = new ArrayList<>();
-        try (Connection connection = DataBaseConfig.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+        try (Connection connection = DataBaseConfig.getInstance().getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next()) {
                 tiquetes.add(new Tiquete(
                         resultSet.getInt("id"),
@@ -51,7 +51,7 @@ public class TiqueteRepository {
     public void save(Tiquete tiquete) throws SQLException {
         String query = "INSERT INTO tiquete (destino, fecha) VALUES ('"
                 + tiquete.getDestino() + "', '" + tiquete.getFecha() + "')";
-        try (Connection connection = DataBaseConfig.getConnection(); Statement statement = connection.createStatement()) {
+        try (Connection connection = DataBaseConfig.getInstance().getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
         }
     }

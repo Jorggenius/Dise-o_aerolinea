@@ -4,18 +4,23 @@
  */
 package vista;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author JORGE
  */
 public class VistaCliente extends javax.swing.JFrame {
-
+     int idCliente;
     /**
      * Creates new form VistaCliente
      */
-    public VistaCliente() {
+    public VistaCliente(int idCliente) {
         initComponents();
         setLocationRelativeTo(this);
+        this.idCliente = idCliente;
     }
 
     /**
@@ -28,9 +33,9 @@ public class VistaCliente extends javax.swing.JFrame {
     private void initComponents() {
 
         txtGestionPrestamos = new javax.swing.JButton();
-        txtGestionPrestamos1 = new javax.swing.JButton();
+        txtCompras = new javax.swing.JButton();
         txtGestionPrestamos2 = new javax.swing.JButton();
-        txtGestionPrestamos3 = new javax.swing.JButton();
+        btnCerrarSecion = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -45,10 +50,15 @@ public class VistaCliente extends javax.swing.JFrame {
             }
         });
 
-        txtGestionPrestamos1.setBackground(new java.awt.Color(153, 153, 255));
-        txtGestionPrestamos1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtGestionPrestamos1.setText("Comprar");
-        txtGestionPrestamos1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        txtCompras.setBackground(new java.awt.Color(153, 153, 255));
+        txtCompras.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        txtCompras.setText("Comprar");
+        txtCompras.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        txtCompras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtComprasActionPerformed(evt);
+            }
+        });
 
         txtGestionPrestamos2.setBackground(new java.awt.Color(153, 153, 255));
         txtGestionPrestamos2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
@@ -60,13 +70,13 @@ public class VistaCliente extends javax.swing.JFrame {
             }
         });
 
-        txtGestionPrestamos3.setBackground(new java.awt.Color(153, 153, 255));
-        txtGestionPrestamos3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        txtGestionPrestamos3.setText("Cerrar secion");
-        txtGestionPrestamos3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        txtGestionPrestamos3.addActionListener(new java.awt.event.ActionListener() {
+        btnCerrarSecion.setBackground(new java.awt.Color(153, 153, 255));
+        btnCerrarSecion.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnCerrarSecion.setText("Cerrar secion");
+        btnCerrarSecion.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnCerrarSecion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtGestionPrestamos3ActionPerformed(evt);
+                btnCerrarSecionActionPerformed(evt);
             }
         });
 
@@ -81,12 +91,12 @@ public class VistaCliente extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(txtGestionPrestamos3))
+                        .addComponent(btnCerrarSecion))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(259, 259, 259)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(txtGestionPrestamos2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtGestionPrestamos1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtCompras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtGestionPrestamos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(307, Short.MAX_VALUE))
@@ -99,11 +109,11 @@ public class VistaCliente extends javax.swing.JFrame {
                 .addGap(61, 61, 61)
                 .addComponent(txtGestionPrestamos)
                 .addGap(31, 31, 31)
-                .addComponent(txtGestionPrestamos1)
+                .addComponent(txtCompras)
                 .addGap(30, 30, 30)
                 .addComponent(txtGestionPrestamos2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
-                .addComponent(txtGestionPrestamos3)
+                .addComponent(btnCerrarSecion)
                 .addGap(20, 20, 20))
         );
 
@@ -112,16 +122,45 @@ public class VistaCliente extends javax.swing.JFrame {
 
     private void txtGestionPrestamosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamosActionPerformed
         // TODO add your handling code here:
+        VistaVerTiquetes vistaVT;
+         try {
+             vistaVT = new VistaVerTiquetes(idCliente);
+             vistaVT.setVisible(true);
+             this.dispose();
+         } catch (SQLException ex) {
+             Logger.getLogger(VistaCliente.class.getName()).log(Level.SEVERE, null, ex);
+         }
+        
       
     }//GEN-LAST:event_txtGestionPrestamosActionPerformed
 
+    private void btnCerrarSecionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSecionActionPerformed
+        // TODO add your handling code here
+        VistaLogin vistaL = new VistaLogin();
+        vistaL.setVisible(true);
+        this.dispose();
+        
+    }//GEN-LAST:event_btnCerrarSecionActionPerformed
+
+    private void txtComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtComprasActionPerformed
+        // TODO add your handling code here:
+        VistaComprar vistaC;
+         try {
+             vistaC = new VistaComprar();
+             vistaC.setVisible(true);
+             this.dispose();
+         } catch (SQLException ex) {
+             Logger.getLogger(VistaCliente.class.getName()).log(Level.SEVERE, null, ex);
+         }
+        
+    }//GEN-LAST:event_txtComprasActionPerformed
+
     private void txtGestionPrestamos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamos2ActionPerformed
         // TODO add your handling code here:
+        VistaHistorial vistaH = new VistaHistorial();
+        vistaH.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_txtGestionPrestamos2ActionPerformed
-
-    private void txtGestionPrestamos3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamos3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtGestionPrestamos3ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -129,10 +168,10 @@ public class VistaCliente extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnCerrarSecion;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton txtCompras;
     private javax.swing.JButton txtGestionPrestamos;
-    private javax.swing.JButton txtGestionPrestamos1;
     private javax.swing.JButton txtGestionPrestamos2;
-    private javax.swing.JButton txtGestionPrestamos3;
     // End of variables declaration//GEN-END:variables
 }

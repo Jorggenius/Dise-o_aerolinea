@@ -4,6 +4,10 @@
  */
 package vista;
 
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author JORGE
@@ -100,11 +104,23 @@ public class VistaAdministrador extends javax.swing.JFrame {
 
     private void txtGestionPrestamosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamosActionPerformed
         // TODO add your handling code here:
+        VistaAgregarTiquetes vistaAT;
+        try {
+            vistaAT = new VistaAgregarTiquetes();
+            vistaAT.setVisible(true);
+            this.dispose();
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaAdministrador.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
       
     }//GEN-LAST:event_txtGestionPrestamosActionPerformed
 
     private void txtGestionPrestamos3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamos3ActionPerformed
         // TODO add your handling code here:
+        VistaLogin vistal = new VistaLogin();
+        vistal.setVisible(true);
+        this.dispose();
     }//GEN-LAST:event_txtGestionPrestamos3ActionPerformed
 
     /**

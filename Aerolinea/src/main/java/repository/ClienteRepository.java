@@ -20,7 +20,7 @@ public class ClienteRepository {
 
     public Cliente findById(int id) throws SQLException {
         String query = "SELECT * FROM cliente WHERE id = " + id;
-        try (Connection connection = DataBaseConfig.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+        try (Connection connection = DataBaseConfig.getInstance().getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
             if (resultSet.next()) {
                 return new Cliente(
                         resultSet.getInt("id"),
@@ -37,7 +37,7 @@ public class ClienteRepository {
     public ArrayList<Cliente> findAll() throws SQLException {
         String query = "SELECT * FROM cliente";
         ArrayList<Cliente> clientes = new ArrayList<>();
-        try (Connection connection = DataBaseConfig.getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
+        try (Connection connection = DataBaseConfig.getInstance().getConnection(); Statement statement = connection.createStatement(); ResultSet resultSet = statement.executeQuery(query)) {
             while (resultSet.next()) {
                 clientes.add(new Cliente(
                         resultSet.getInt("id"),
@@ -54,7 +54,7 @@ public class ClienteRepository {
         String query = "INSERT INTO cliente (nombre, passwor, edad) VALUES ('"
                 + cliente.getNombre() + "', '" + cliente.getPassword()
                 + "', '" + cliente.getPassword()  + "')";
-        try (Connection connection = DataBaseConfig.getConnection(); Statement statement = connection.createStatement()) {
+        try (Connection connection = DataBaseConfig.getInstance().getConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate(query);
         }
     }
