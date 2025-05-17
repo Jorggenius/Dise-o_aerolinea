@@ -5,13 +5,30 @@
 package vista;
 
 import controlador.ControlAgregarTiquete;
+import controlador.ControlVistaCompra;
+import excepciones.InvalidUserDataException;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import modelo.Admin;
+import modelo.Compra;
+import modelo.CompraBasica;
+import modelo.Descuento;
+import modelo.ICompra;
+import modelo.ObserverCompra;
+import modelo.PagoConCriptomonedas;
+import modelo.PagoConPayPal;
+import modelo.PagoConTarjeta;
+import modelo.ProcesadorDePagos;
 import modelo.Tiquete;
 
 /**
@@ -20,19 +37,32 @@ import modelo.Tiquete;
  */
 public class VistaComprar extends javax.swing.JFrame {
 
+    ControlVistaCompra controlC;
     ControlAgregarTiquete controlAT;
     ArrayList<Tiquete> tiquetes;
     int idCliente;
+    Date fechaGlobal;
+    String destinoGlobal;
+    ProcesadorDePagos procesador;
+    Admin admin;
+    ObserverCompra observerCompra;
 
     /**
      * Creates new form VistaComprar
      */
-    public VistaComprar() throws SQLException {
+    public VistaComprar(int idCliente) throws SQLException {
         initComponents();
         setLocationRelativeTo(this);
         this.idCliente = idCliente;
         controlAT = new ControlAgregarTiquete();
+        controlC = new ControlVistaCompra(idCliente);
+//        System.out.println(idCliente);
+        fechaGlobal = new Date(WIDTH);
+        destinoGlobal = "";
         tiquetes = controlAT.getTiquetes();
+        procesador = new ProcesadorDePagos();
+        admin = new Admin();
+        observerCompra = new ObserverCompra();
         llenarTabla();
         agregarListenerTabla();
     }
@@ -53,6 +83,9 @@ public class VistaComprar extends javax.swing.JFrame {
         txtGestionPrestamos2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         tablaTiquetes = new javax.swing.JTable();
+        btnDescuento = new javax.swing.JButton();
+        boxMetodo = new javax.swing.JComboBox<>();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -76,6 +109,11 @@ public class VistaComprar extends javax.swing.JFrame {
         txtGestionPrestamos2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtGestionPrestamos2.setText("Regresar");
         txtGestionPrestamos2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        txtGestionPrestamos2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtGestionPrestamos2ActionPerformed(evt);
+            }
+        });
 
         tablaTiquetes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -86,6 +124,21 @@ public class VistaComprar extends javax.swing.JFrame {
             }
         ));
         jScrollPane1.setViewportView(tablaTiquetes);
+
+        btnDescuento.setBackground(new java.awt.Color(153, 153, 255));
+        btnDescuento.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        btnDescuento.setText("Con Descuento");
+        btnDescuento.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        btnDescuento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDescuentoActionPerformed(evt);
+            }
+        });
+
+        boxMetodo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "--------", "Pay Pal", "Tarjeta", "Cripto Moneda" }));
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel4.setText("Tipo pago");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -98,12 +151,18 @@ public class VistaComprar extends javax.swing.JFrame {
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(93, 93, 93)
-                        .addComponent(jLabel3)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addComponent(jLabel4))
                         .addGap(18, 18, 18)
-                        .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 31, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(boxMetodo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtId, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtGestionPrestamos1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(311, 311, 311))
+                .addGap(18, 18, 18)
+                .addComponent(btnDescuento, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(135, 135, 135))
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(txtGestionPrestamos2, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -111,7 +170,7 @@ public class VistaComprar extends javax.swing.JFrame {
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 829, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         layout.setVerticalGroup(
@@ -123,14 +182,19 @@ public class VistaComprar extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3)
-                    .addComponent(txtGestionPrestamos1))
-                .addGap(303, 303, 303)
+                    .addComponent(txtGestionPrestamos1)
+                    .addComponent(btnDescuento))
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(boxMetodo, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
+                .addGap(255, 255, 255)
                 .addComponent(txtGestionPrestamos2)
                 .addContainerGap(15, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(142, 142, 142)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 257, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(195, 195, 195)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addContainerGap(71, Short.MAX_VALUE)))
         );
 
@@ -139,8 +203,144 @@ public class VistaComprar extends javax.swing.JFrame {
 
     private void txtGestionPrestamos1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamos1ActionPerformed
         // TODO add your handling code here:
+        int metodo = boxMetodo.getSelectedIndex();
+        switch (metodo) {
+            case 1: // paypal
+                procesador.setMetodoPago(new PagoConPayPal());
+                procesador.procesarPago(50 + (new Random().nextDouble() * 50));
+                JOptionPane.showMessageDialog(null, "Pago con Pay Pal");
+                admin.agregarObservador(observerCompra);
+                admin.señalCompra(destinoGlobal);
+                try {
+                    Date fecha = fechaGlobal;
+                    ICompra compraBasica = new CompraBasica(fecha);
+                    controlC.guardarCompra(compraBasica.getFecha());
+                    JOptionPane.showMessageDialog(null, "La compra fue guardada con éxito");
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvalidUserDataException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+
+            case 2: // Tarjeta
+                procesador.setMetodoPago(new PagoConTarjeta());
+                procesador.procesarPago(50 + (new Random().nextDouble() * 50));
+                JOptionPane.showMessageDialog(null, "Pago con Tarjeta");
+                admin.agregarObservador(observerCompra);
+                admin.señalCompra(destinoGlobal);
+                try {
+                    Date fecha = fechaGlobal;
+                    ICompra compraBasica = new CompraBasica(fecha);
+                    controlC.guardarCompra(compraBasica.getFecha());
+                    JOptionPane.showMessageDialog(null, "La compra fue guardada con éxito");
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvalidUserDataException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+            case 3: // Cripto
+                procesador.setMetodoPago(new PagoConCriptomonedas());
+                procesador.procesarPago(50 + (new Random().nextDouble() * 50));
+                JOptionPane.showMessageDialog(null, "Pago con Cripto");
+                admin.agregarObservador(observerCompra);
+                admin.señalCompra(destinoGlobal);
+                try {
+                    Date fecha = fechaGlobal;
+                    ICompra compraBasica = new CompraBasica(fecha);
+                    controlC.guardarCompra(compraBasica.getFecha());
+                    JOptionPane.showMessageDialog(null, "La compra fue guardada con éxito");
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvalidUserDataException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+
+            default:
+                JOptionPane.showMessageDialog(null, "No se ha seleccionado un método de pago válido");
+                break;
+        }
+
     }//GEN-LAST:event_txtGestionPrestamos1ActionPerformed
-   private void llenarTabla() throws SQLException {
+
+    private void txtGestionPrestamos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamos2ActionPerformed
+        // TODO add your handling code here:
+        VistaCliente vistaC = new VistaCliente(idCliente);
+        vistaC.setVisible(true);
+        this.dispose();
+
+    }//GEN-LAST:event_txtGestionPrestamos2ActionPerformed
+
+    private void btnDescuentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDescuentoActionPerformed
+        // TODO add your handling code here:
+        int metodo = boxMetodo.getSelectedIndex();
+        switch (metodo) {
+            case 1: // pay pall
+                procesador.setMetodoPago(new PagoConPayPal());
+                procesador.procesarPago(50 + (new Random().nextDouble() * 50));
+                JOptionPane.showMessageDialog(null, "Pago con Pay Pal");
+                admin.agregarObservador(observerCompra);
+                admin.señalCompra(destinoGlobal);
+                try {
+                    Date fecha = fechaGlobal;
+                    ICompra compra = new CompraBasica(fecha);
+                    ICompra descuento = new Descuento(compra);
+                    controlC.guardarCompraDecorer(descuento);
+                    JOptionPane.showMessageDialog(null, "La compra fue realizada");
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvalidUserDataException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+
+            case 2: // Tarjeta
+                procesador.setMetodoPago(new PagoConTarjeta());
+                procesador.procesarPago(50 + (new Random().nextDouble() * 50));
+                JOptionPane.showMessageDialog(null, "Pago con Tarjeta");
+                admin.agregarObservador(observerCompra);
+                admin.señalCompra(destinoGlobal);
+                try {
+                    Date fecha = fechaGlobal;
+                    ICompra compra = new CompraBasica(fecha);
+                    ICompra descuento = new Descuento(compra);
+                    controlC.guardarCompraDecorer(descuento);
+                    JOptionPane.showMessageDialog(null, "La compra fue realizada");
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvalidUserDataException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+
+            case 3: // Cripto
+                procesador.setMetodoPago(new PagoConCriptomonedas());
+                procesador.procesarPago(50 + (new Random().nextDouble() * 50));
+                JOptionPane.showMessageDialog(null, "Pago con Cripto");
+                admin.agregarObservador(observerCompra);
+                admin.señalCompra(destinoGlobal);
+                try {
+                    Date fecha = fechaGlobal;
+                    ICompra compra = new CompraBasica(fecha);
+                    ICompra descuento = new Descuento(compra);
+                    controlC.guardarCompraDecorer(descuento);
+                    JOptionPane.showMessageDialog(null, "La compra fue realizada");
+                } catch (SQLException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (InvalidUserDataException ex) {
+                    Logger.getLogger(VistaComprar.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                break;
+
+            default:
+                JOptionPane.showMessageDialog(null, "No se ha seleccionado un método de pago válido");
+                break;
+        }
+
+    }//GEN-LAST:event_btnDescuentoActionPerformed
+    private void llenarTabla() throws SQLException {
         tiquetes = controlAT.getTiquetes();
         DefaultTableModel model = new DefaultTableModel(new String[]{"Id", "Destino", "Fecha"},
                 tiquetes.size());
@@ -153,7 +353,7 @@ public class VistaComprar extends javax.swing.JFrame {
             modelP.setValueAt(tiquete.getFecha(), i, 2);
         }
     }
-    
+
     private void agregarListenerTabla() {
         ListSelectionModel model = tablaTiquetes.getSelectionModel();
         model.addListSelectionListener(new ListSelectionListener() {
@@ -164,6 +364,8 @@ public class VistaComprar extends javax.swing.JFrame {
                     if (selectedRow != -1) {
                         // Obtén el valor de la columna "№ Plaza"
                         int id = (int) tablaTiquetes.getValueAt(selectedRow, 0);
+                        VistaComprar.this.destinoGlobal = tablaTiquetes.getValueAt(selectedRow, 1).toString();
+                        VistaComprar.this.fechaGlobal = (Date) tablaTiquetes.getValueAt(selectedRow, 2);
                         txtId.setText(String.valueOf(id));
                     }
                 }
@@ -175,8 +377,11 @@ public class VistaComprar extends javax.swing.JFrame {
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> boxMetodo;
+    private javax.swing.JButton btnDescuento;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tablaTiquetes;
     private javax.swing.JButton txtGestionPrestamos1;

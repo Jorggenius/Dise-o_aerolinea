@@ -6,8 +6,10 @@ package vista;
 
 import controlador.ControlRegistro;
 import javax.swing.JOptionPane;
+import modelo.Admin;
 import modelo.Cliente;
 import modelo.ClienteBuilder;
+import modelo.ObserverRegistro;
 
 /**
  *
@@ -16,6 +18,8 @@ import modelo.ClienteBuilder;
 public class VistaRegistro extends javax.swing.JFrame {
     ControlRegistro controlR;
     ClienteBuilder builder;
+    Admin admin;
+    ObserverRegistro observerRegistro;
     /**
      * Creates new form VistaComprar
      */
@@ -24,6 +28,8 @@ public class VistaRegistro extends javax.swing.JFrame {
         setLocationRelativeTo(this);
         controlR = new ControlRegistro();
         builder = new ClienteBuilder();
+        admin = new Admin();
+        observerRegistro = new ObserverRegistro();
     }
 
     /**
@@ -144,6 +150,7 @@ public class VistaRegistro extends javax.swing.JFrame {
 
     private void btnRegistroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistroActionPerformed
         // TODO add your handling code here:
+        
         String nombre = txtNombre.getText();
         String password = txtPassword.getText();
         int edad = Integer.parseInt(txtEdad.getText());
@@ -153,6 +160,8 @@ public class VistaRegistro extends javax.swing.JFrame {
                 .setEdad(edad)
                 .getCliente();
         controlR.register(cliente.getNombre(), cliente.getPassword(), cliente.getEdad());
+        admin.agregarObservador(observerRegistro);
+        admin.señalRegistro(nombre);
         JOptionPane.showMessageDialog(null, "Cliente registrado");
     }//GEN-LAST:event_btnRegistroActionPerformed
 

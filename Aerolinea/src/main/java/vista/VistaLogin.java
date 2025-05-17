@@ -142,7 +142,7 @@ public class VistaLogin extends javax.swing.JFrame {
         String contraseña = txtContraseña.getText();
 
         if (controlL.login(usuario, contraseña)) {
-            VistaCliente vistaC = new VistaCliente(controlL.ObtenerID(usuario, usuario));
+            VistaCliente vistaC = new VistaCliente(controlL.ObtenerID(usuario, contraseña));
             vistaC.setVisible(true);
             this.dispose();
         } else if (usuario.equals("admin") && contraseña.equals("123")) {

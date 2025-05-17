@@ -9,6 +9,9 @@ import java.sql.Date;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import modelo.Compra;
+import modelo.CompraBasica;
+import modelo.Descuento;
+import modelo.ICompra;
 import repository.CompraRepository;
 import validator.CompraValidator;
 
@@ -19,12 +22,13 @@ import validator.CompraValidator;
 public class CompraService {
 
     int clienteId;
+    private CompraRepository compraRepository;
 
     public CompraService(int clienteId) {
         this.clienteId = clienteId;
+        compraRepository = new CompraRepository(clienteId);
+        System.out.println( "Id Conseguir Servicio " + clienteId);
     }
-    
-    private CompraRepository compraRepository = new CompraRepository();
 
     public Compra getCompraById(int id) throws SQLException {
         return compraRepository.findById(id);
@@ -34,16 +38,28 @@ public class CompraService {
         return compraRepository.findAll();
     }
 
-    public ArrayList<Compra> getPrestamosCliente() throws SQLException {
+    public ArrayList<CompraBasica> getComprasBasicCliente() throws SQLException {
+//        System.out.println(compraRepository.findByCompraId(clienteId).size());
         return compraRepository.findByCompraId(clienteId);
     }
-    
-      public void createCompra(Date fecha) throws SQLException, InvalidUserDataException {
-        if (!CompraValidator.validateFecha(fecha)
-                ) {
+
+    public ArrayList<Descuento> getComprasDecorerCliente() throws SQLException {
+        return compraRepository.findByCompraDecorerId(clienteId);
+    }
+
+    public void createCompra(Date fecha) throws SQLException, InvalidUserDataException {
+        if (!CompraValidator.validateFecha(fecha)) {
             throw new InvalidUserDataException("Invalid user data");
         }
-        Compra compra = new Compra(fecha);
+        CompraBasica compra = new CompraBasica(fecha);
         compraRepository.save(compra);
+    }
+
+    public void createCompraDecorer(ICompra descuento) throws SQLException, InvalidUserDataException {
+        if (!CompraValidator.validateFecha(descuento.getFecha())) {
+            throw new InvalidUserDataException("Invalid user data");
+        }
+        ICompra decorer = new Descuento(descuento);
+        compraRepository.saveDetalle(decorer);
     }
 }

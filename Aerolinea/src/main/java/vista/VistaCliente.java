@@ -13,7 +13,9 @@ import java.util.logging.Logger;
  * @author JORGE
  */
 public class VistaCliente extends javax.swing.JFrame {
-     int idCliente;
+
+    int idCliente;
+
     /**
      * Creates new form VistaCliente
      */
@@ -123,15 +125,15 @@ public class VistaCliente extends javax.swing.JFrame {
     private void txtGestionPrestamosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamosActionPerformed
         // TODO add your handling code here:
         VistaVerTiquetes vistaVT;
-         try {
-             vistaVT = new VistaVerTiquetes(idCliente);
-             vistaVT.setVisible(true);
-             this.dispose();
-         } catch (SQLException ex) {
-             Logger.getLogger(VistaCliente.class.getName()).log(Level.SEVERE, null, ex);
-         }
-        
-      
+        try {
+            vistaVT = new VistaVerTiquetes(idCliente);
+            vistaVT.setVisible(true);
+            this.dispose();
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+
     }//GEN-LAST:event_txtGestionPrestamosActionPerformed
 
     private void btnCerrarSecionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCerrarSecionActionPerformed
@@ -139,33 +141,37 @@ public class VistaCliente extends javax.swing.JFrame {
         VistaLogin vistaL = new VistaLogin();
         vistaL.setVisible(true);
         this.dispose();
-        
+
     }//GEN-LAST:event_btnCerrarSecionActionPerformed
 
     private void txtComprasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtComprasActionPerformed
         // TODO add your handling code here:
         VistaComprar vistaC;
-         try {
-             vistaC = new VistaComprar();
-             vistaC.setVisible(true);
-             this.dispose();
-         } catch (SQLException ex) {
-             Logger.getLogger(VistaCliente.class.getName()).log(Level.SEVERE, null, ex);
-         }
-        
+        try {
+            vistaC = new VistaComprar(idCliente);
+            vistaC.setVisible(true);
+            this.dispose();
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_txtComprasActionPerformed
 
     private void txtGestionPrestamos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamos2ActionPerformed
         // TODO add your handling code here:
-        VistaHistorial vistaH = new VistaHistorial();
-        vistaH.setVisible(true);
-        this.dispose();
+        try {
+            VistaHistorial vistaH = new VistaHistorial(idCliente);
+            vistaH.setVisible(true);
+            this.dispose();
+        } catch (SQLException ex) {
+            Logger.getLogger(VistaCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_txtGestionPrestamos2ActionPerformed
 
     /**
      * @param args the command line arguments
      */
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCerrarSecion;

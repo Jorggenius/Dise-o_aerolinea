@@ -4,18 +4,33 @@
  */
 package vista;
 
+import controlador.ControlHistorial;
+import java.sql.SQLException;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import modelo.CompraBasica;
+import modelo.Descuento;
+import modelo.Tiquete;
+
 /**
  *
  * @author JORGE
  */
 public class VistaHistorial extends javax.swing.JFrame {
 
+    ControlHistorial controlH;
+    int idCliente;
+
     /**
      * Creates new form VistaComprar
      */
-    public VistaHistorial() {
+    public VistaHistorial(int idCliente) throws SQLException {
         initComponents();
         setLocationRelativeTo(this);
+        this.idCliente = idCliente;
+        controlH = new ControlHistorial(idCliente);
+        llenarTablaBasico();
+        llenarTablaDescuento();
     }
 
     /**
@@ -30,7 +45,9 @@ public class VistaHistorial extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         txtGestionPrestamos2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaDescuento = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tablaBasico = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -41,16 +58,31 @@ public class VistaHistorial extends javax.swing.JFrame {
         txtGestionPrestamos2.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         txtGestionPrestamos2.setText("Regresar");
         txtGestionPrestamos2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        txtGestionPrestamos2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtGestionPrestamos2ActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaDescuento.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Id", "Destino", "Fecha"
+                "Id", "Fecha", "Detalle"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaDescuento);
+
+        tablaBasico.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Id", "Fecha"
+            }
+        ));
+        jScrollPane2.setViewportView(tablaBasico);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -59,15 +91,19 @@ public class VistaHistorial extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(txtGestionPrestamos2, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(620, Short.MAX_VALUE))
+                .addContainerGap(619, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(317, 317, 317))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 787, Short.MAX_VALUE)
+                .addContainerGap())
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                     .addContainerGap()
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 788, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 787, Short.MAX_VALUE)
                     .addContainerGap()))
         );
         layout.setVerticalGroup(
@@ -75,28 +111,64 @@ public class VistaHistorial extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(jLabel1)
-                .addGap(353, 353, 353)
+                .addGap(149, 149, 149)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(104, 104, 104)
                 .addComponent(txtGestionPrestamos2)
                 .addContainerGap(15, Short.MAX_VALUE))
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
-                    .addGap(92, 92, 92)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 309, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(69, Short.MAX_VALUE)))
+                    .addGap(102, 102, 102)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(268, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void txtGestionPrestamos2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtGestionPrestamos2ActionPerformed
+        // TODO add your handling code here:
+        VistaCliente vistaC = new VistaCliente(idCliente);
+        vistaC.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_txtGestionPrestamos2ActionPerformed
+
+    private void llenarTablaBasico() throws SQLException {
+        
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Id", "Fecha"},
+                controlH.getComprasB().size());
+        tablaBasico.setModel(model);
+        TableModel modelP = tablaBasico.getModel();
+        for (int i = 0; i < controlH.getComprasB().size(); i++) {
+            CompraBasica compra = controlH.getComprasB().get(i);
+            modelP.setValueAt(compra.getId(), i, 0);
+            modelP.setValueAt(compra.getFecha(), i, 1);
+        }
+    }
+   
+    private void llenarTablaDescuento() throws SQLException {
+        
+        DefaultTableModel model = new DefaultTableModel(new String[]{"Id", "Fecha", "Detalle"},
+                controlH.getComprasD().size());
+        tablaDescuento.setModel(model);
+        TableModel modelP = tablaDescuento.getModel();
+        for (int i = 0; i < controlH.getComprasD().size(); i++) {
+            Descuento compra = controlH.getComprasD().get(i);
+            modelP.setValueAt(compra.getId(), i, 0);
+            modelP.setValueAt(compra.getFecha(), i, 1);
+            modelP.setValueAt(compra.getDetalle(), i, 2);
+        }
+    }
     /**
      * @param args the command line arguments
      */
 
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTable tablaBasico;
+    private javax.swing.JTable tablaDescuento;
     private javax.swing.JButton txtGestionPrestamos2;
     // End of variables declaration//GEN-END:variables
 }
